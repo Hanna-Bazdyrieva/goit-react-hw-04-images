@@ -17,7 +17,7 @@ const ImageGallery = ({ query }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [modalData, setModalData] = useState(null);
-
+  const [isLastPage, setIsLastPage] = useState(false);
 
   //? ref for scrollIntoView
   // let imageItemRef = createRef(null);
@@ -25,12 +25,19 @@ const ImageGallery = ({ query }) => {
   const changeImages = async () => {
     setIsLoading(true);
     setError(null);
+    setIsLastPage(false);
 
     try {
       const data = await getSearchedPicturesApi(query, page);
 
       if (data.hits.length === 0) {
         throw new Error('OOPS... We found nothing... Sorry..');
+      }
+
+      const lastPage = Math.ceil(data.totalHits / 12);
+
+      if (lastPage === page) {
+        setIsLastPage(true);
       }
 
       page === 1 ? setImages(data.hits) : setImages([...images, ...data.hits]);
@@ -52,9 +59,8 @@ const ImageGallery = ({ query }) => {
     if (query !== '' || page !== 1) {
       changeImages();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, page]);
-
 
   //? scroll refs to pass to component
   // useEffect(() => {
@@ -64,7 +70,7 @@ const ImageGallery = ({ query }) => {
   //   });
   //   }, [images, imageItemRef]);
 
-    const changePage = () => {
+  const changePage = () => {
     setPage(() => page + 1);
   };
 
@@ -83,11 +89,16 @@ const ImageGallery = ({ query }) => {
             {images.map((image, i, arr) => (
               //? ref forwardRef??
               // <ImageGalleryItem key={image.id} ref={arr.length - 12 === i && i !== 0 ? imageItemRef : null} {...image} openModal={setModalData} />
-              <ImageGalleryItem key={image.id} {...image} openModal={setModalData} />
-
+              <ImageGalleryItem
+                key={image.id}
+                {...image}
+                openModal={setModalData}
+              />
             ))}
           </Gallery>
-          {images.length > 0 && <LoadMoreButton onClick={changePage} />}
+          {images.length > 0 && !isLastPage && (
+            <LoadMoreButton onClick={changePage} />
+          )}
           {modalData && <Modal {...modalData} closeModal={closeModal} />}
         </>
       )}
