@@ -1,39 +1,35 @@
 import { StyledModal, Overlay, Img } from './Modal.styled';
 import PropTypes from 'prop-types';
 import { createPortal } from 'react-dom';
-import { Component } from 'react';
+import { useEffect } from 'react';
 
 const modalRoot = document.querySelector('#modal-root');
 
-class Modal extends Component {
-  static propTypes = {
-    closeModal: PropTypes.func.isRequired,
-  };
+const  Modal =({id, url, closeModal})=> {
 
-  componentDidMount() {
-    window.addEventListener('keydown', this.closeModalByEscape);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.closeModalByEscape);
-  }
-
-  closeModalByEscape = e => {
+ const closeModalByEscape = e => {
     if (e.code === 'Escape') {
-      this.props.closeModal();
+      closeModal();
     }
   };
 
-  closeModalOnBackdrop = e => {
+  const closeModalOnBackdrop = e => {
     if (e.target === e.currentTarget) {
-      this.props.closeModal();
+      closeModal();
     }
   };
+  
+useEffect (()=>{
+  window.addEventListener('keydown', closeModalByEscape);
 
-  render() {
-    const { id, url } = this.props;
+  return ()=>{
+    window.removeEventListener('keydown', closeModalByEscape);
+  }
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [])
+ 
     return createPortal(
-      <Overlay onClick={this.closeModalOnBackdrop}>
+      <Overlay onClick={closeModalOnBackdrop}>
         <StyledModal>
             <Img src={url} alt={id} />
         </StyledModal>
@@ -41,6 +37,12 @@ class Modal extends Component {
       modalRoot
     );
   }
-}
+
+Modal.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+  id: PropTypes.number.isRequired,
+  url: PropTypes.string.isRequired,
+
+};
 
 export default Modal;

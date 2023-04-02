@@ -1,18 +1,18 @@
 import { GalleryItem, ItemImage } from './ImageGalleryItem.styled';
 import PropTypes from 'prop-types';
 
-const ImageGalleryItem = ({ id, url, urlLarge, openModal }) => {
+const ImageGalleryItem = ({id, webformatURL, largeImageURL, openModal}) => {
   return (
-    <GalleryItem onClick={() => openModal({ url: urlLarge, id })}>
-      <ItemImage src={url} alt={id} />
+    <GalleryItem onClick={() => openModal({ url: largeImageURL, id })}>
+      <ItemImage src={webformatURL} alt={id} />
     </GalleryItem>
   );
 };
 
 ImageGalleryItem.propTypes = {
   id: PropTypes.number.isRequired,
-  url: PropTypes.string.isRequired,
-  urlLarge: PropTypes.string.isRequired,
+  webformatURL: PropTypes.string.isRequired,
+  largeImageURL: PropTypes.string.isRequired,
   openModal: PropTypes.func.isRequired,
 };
 

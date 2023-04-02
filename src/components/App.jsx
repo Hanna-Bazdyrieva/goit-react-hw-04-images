@@ -1,25 +1,21 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import Searchbar from './Searchbar';
 import ImageGallery from './ImageGallery';
-// import Modal from './Modal';
 
-class App extends Component {
-  state = {
-    query: '',
-  };
+const App= ()=> {
 
-  changeQuery = query => {
-    this.setState({ query });
-  };
+  const [query, setQuery] = useState('');
 
-  render() {
-    return (
+  //   changeQuery = query => {
+  //   setQuery( query);
+  // };
+
+   return (
       <>
-        <Searchbar onSubmit={this.changeQuery} />
-        <ImageGallery query={this.state.query} />
+        <Searchbar onSubmit={setQuery} />
+        <ImageGallery query={query} />
       </>
     );
-  }
 }
 
 export default App;
